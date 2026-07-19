@@ -11,6 +11,6 @@
 
 <br/><br/>
 
-<img src="https://github-readme-stats.vercel.app/api?username=shitianyaa&count_private=true&show_icons=true&hide_border=true&icon_color=586069&title_color=0366d6&bg_color=00000000" alt="GitHub stats">
+<img src="https://github-readme-stats-mrdulin.vercel.app/api?username=shitianyaa&count_private=true&show_icons=true&hide_border=true&icon_color=586069&title_color=0366d6&bg_color=00000000" alt="GitHub stats">
 
 </div>
