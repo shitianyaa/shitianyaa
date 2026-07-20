@@ -24,7 +24,25 @@ jobs:
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
 
-      - name: push snake to output branch
+      - name: generate stats card
+        env:
+          GITHUB_USER: ${{ github.repository_owner }}
+        run: |
+          stats_url="https://github-readme-stats-fast.vercel.app/api?username=${GITHUB_USER}&count_private=true&show_icons=true&hide_border=true&icon_color=586069&title_color=0366d6&bg_color=00000000"
+          fallback_url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/output/github-stats.svg"
+
+          if ! curl --fail --location --silent --show-error \
+            --retry 4 --retry-all-errors --connect-timeout 10 --max-time 45 \
+            "$stats_url" --output dist/github-stats.svg \
+            || ! grep --quiet '<svg' dist/github-stats.svg; then
+            echo "Stats provider unavailable; restoring the last published card."
+            curl --fail --location --silent --show-error \
+              --retry 2 --retry-all-errors --connect-timeout 10 --max-time 30 \
+              "$fallback_url" --output dist/github-stats.svg
+            grep --quiet '<svg' dist/github-stats.svg
+          fi
+
+      - name: push generated assets to output branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -33,6 +51,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Generate snake"
+          git commit -m "Generate profile assets"
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin output
